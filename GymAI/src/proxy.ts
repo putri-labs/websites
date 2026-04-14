@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
 // Public paths that don't require authentication
-const PUBLIC_PATHS = ["/login", "/api/auth"];
+const PUBLIC_PATHS = ["/", "/login", "/studio", "/api/auth"];
 
 // Role-to-prefix map: each role may only access its own prefix (and shared paths)
 const ROLE_PREFIX: Record<string, string> = {
