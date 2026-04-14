@@ -20,7 +20,7 @@ export interface SanityFaqItem {
 }
 
 export async function getPricingPlans(): Promise<SanityPricingPlan[]> {
-  if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) return [];
+  if (!sanityClient) return [];
   return sanityClient.fetch(
     `*[_type == "pricingPlan"] | order(order asc) {
       _id, name, monthlyPrice, yearlyPrice, description, features, cta, highlighted, order
@@ -29,7 +29,7 @@ export async function getPricingPlans(): Promise<SanityPricingPlan[]> {
 }
 
 export async function getFaqItems(): Promise<SanityFaqItem[]> {
-  if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) return [];
+  if (!sanityClient) return [];
   return sanityClient.fetch(
     `*[_type == "faqItem"] | order(order asc) {
       _id, question, answer, order
