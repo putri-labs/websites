@@ -1,0 +1,22 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@gymai_api_url",
+    "AUTH_SECRET": "@gymai_auth_secret",
+    "AUTH_URL": "@gymai_auth_url",
+    "NEXT_PUBLIC_SANITY_PROJECT_ID": "@gymai_sanity_project_id",
+    "NEXT_PUBLIC_SANITY_DATASET": "@gymai_sanity_dataset",
+    "NEXT_PUBLIC_PLAUSIBLE_DOMAIN": "@gymai_plausible_domain"
+  },
+  "headers": [
+    {
+      "source": "/studio/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    }
+  ]
+}
