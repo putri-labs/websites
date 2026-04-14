@@ -1,0 +1,53 @@
+/* app/globals.css */
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #4F46E5;
+  --color-primary-dark: #3730A3;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  
+  --animate-gradient-x: gradient-x 15s ease infinite;
+}
+
+@keyframes gradient-x {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes ui-run {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes ui-run-vertical {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #fafafa;
+  color: #111827;
+}
