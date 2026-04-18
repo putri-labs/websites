@@ -14,7 +14,8 @@ const config: Config = {
         accent: "#C19B76", // Sand / Gold accent
       },
       fontFamily: {
-        sans: ["var(--font-inter)"],
+        sans: ["var(--font-outfit)", "var(--font-inter)", "sans-serif"],
+        serif: ["var(--font-cormorant)", "serif"],
       },
     },
   },
