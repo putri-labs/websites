@@ -4,6 +4,7 @@ import { ScrollTelling } from "@/components/scrollytelling";
 import { MapPin, Wind, Compass, Camera } from "lucide-react";
 import SmoothScroll from "@/components/SmoothScroll";
 import StorySection from "@/components/StorySection";
+import MagazineSection from "@/components/MagazineSection";
 import Hero from "@/components/Hero";
 
 interface RetreatExperienceProps {
@@ -26,12 +27,14 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
 
           <Hero />
 
-          <StorySection
+          <MagazineSection
             start={0.15}
-            end={0.25}
-            icon={MapPin}
-            headline="The Edge of the World"
-            subheadline="Discover a sanctuary perched where the mountains meet the Pacific. An architectural masterpiece designed for absolute isolation."
+            end={0.35}
+            headline="What is Stargazing?"
+            subheadline="A sanctuary for the soul, carved into silence."
+            copy={[
+              "Stargazing is an invitation to reconnect with the archaic rhythms of the universe. Here, architectural elegance meets the raw landscape, where every moment is curated to evoke wonder under a canopy of infinite light. Look out. Look up.",
+            ]}
           />
 
           <StorySection

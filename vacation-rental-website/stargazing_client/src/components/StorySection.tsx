@@ -36,7 +36,7 @@ export default function StorySection({
         className,
       )}
     >
-      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[60vh] bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.6)_0%,transparent_70%)] pointer-events-none z-0" />
+      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[60vh] pointer-events-none z-0" />
 
       <div className="relative z-10 text-center flex flex-col items-center px-6">
         {Icon && (
@@ -56,13 +56,6 @@ export default function StorySection({
             {subheadline}
           </p>
         )}
-
-        {/* {isHero && (
-          <div className="mt-[20vh] flex flex-col items-center gap-4 animate-pulse">
-            <p className="text-xs md:text-sm uppercase tracking-widest text-[#d4af37] font-medium">Scroll to Explore</p>
-            <div className="w-[1px] h-16 md:h-24 bg-gradient-to-b from-[#d4af37] to-transparent" />
-          </div>
-        )} */}
       </div>
     </div>
   );
