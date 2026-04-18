@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useScroll, useTransform } from "framer-motion";
+import { useScroll, useTransform, useSpring, useMotionValueEvent } from "framer-motion";
 import { ScrollTellingContext } from "./context";
 
 interface ScrollTellingProps {
@@ -19,57 +19,120 @@ export default function ScrollTelling({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
   const lastDrawnIndexRef = useRef<number>(-1);
+  const canvasSizeRef = useRef({ width: 0, height: 0 });
   
+  // High-reliability progress tracking
   const [loadedCount, setLoadedCount] = useState(0);
+  const loadedIndicesRef = useRef<Set<number>>(new Set());
+  const loadCycleRef = useRef<number>(0);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
   });
 
-  // Map progress to frame index
-  const frameIndex = useTransform(scrollYProgress, [0, 1], [0, frames.length - 1]);
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  const frameIndex = useTransform(smoothProgress, [0, 1], [0, frames.length - 1]);
 
   useEffect(() => {
-    // Reset load count when frames change to fix "200% loaded" bug
+    if (!canvasRef.current) return;
+    
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry) {
+        const { width, height } = entry.contentRect;
+        const dpr = window.devicePixelRatio || 1;
+        const targetWidth = width * dpr;
+        const targetHeight = height * dpr;
+
+        canvasSizeRef.current = { width: targetWidth, height: targetHeight };
+        
+        if (canvasRef.current) {
+          canvasRef.current.width = targetWidth;
+          canvasRef.current.height = targetHeight;
+          if (lastDrawnIndexRef.current >= 0) {
+            draw(lastDrawnIndexRef.current);
+          }
+        }
+      }
+    });
+
+    observer.observe(canvasRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    // Increment cycle ID to ignore results from stale preload loops
+    const currentCycle = ++loadCycleRef.current;
+    
     setLoadedCount(0);
+    loadedIndicesRef.current.clear();
     lastDrawnIndexRef.current = -1;
+    imagesRef.current = new Array(frames.length).fill(null);
     
     const preload = async () => {
-      imagesRef.current = new Array(frames.length).fill(null);
-      
-      const loadImg = (idx: number) => {
-        if (imagesRef.current[idx]) return Promise.resolve();
-        return new Promise<void>((resolve) => {
+      const loadImg = async (idx: number) => {
+        // Guard: Check if cycle is still active
+        if (currentCycle !== loadCycleRef.current) return;
+        if (imagesRef.current[idx]) return;
+        
+        try {
           const img = new Image();
           img.src = frames[idx];
-          img.onload = () => {
-            imagesRef.current[idx] = img;
-            setLoadedCount(prev => prev + 1);
-            resolve();
-          };
-          img.onerror = () => {
-            console.error(`Failed to load frame ${idx}: ${frames[idx]}`);
-            resolve();
-          };
-        });
+          
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+          });
+
+          // Guard: Verify cycle again after async load
+          if (currentCycle !== loadCycleRef.current) return;
+
+          // SUCCESS: Essential state update
+          imagesRef.current[idx] = img;
+          
+          if (!loadedIndicesRef.current.has(idx)) {
+            loadedIndicesRef.current.add(idx);
+            setLoadedCount(loadedIndicesRef.current.size);
+          }
+
+          // Trigger redraw if we just loaded the current or first frame
+          const currentIdx = Math.round(frameIndex.get());
+          if (idx === currentIdx || (idx === 0 && lastDrawnIndexRef.current === -1)) {
+            requestAnimationFrame(() => draw(idx));
+          }
+
+          // OPTIONAL: Background decoding as enhancement
+          if ("decode" in img) {
+            img.decode().catch(() => {
+              // Ignore decoding errors; the image is still usable via standard drawImage
+            });
+          }
+        } catch (err) {
+          // If a frame fails, we don't block the whole sequence
+          console.warn(`Frame ${idx} failed to load, skipping...`);
+        }
       };
 
-      // Load first frame immediately
+      // 1. Initial Priority Chunk
       await loadImg(0);
-      draw(0);
-
-      // Load initial chunk (first 30 frames)
       const initialChunk = [];
       for(let i=1; i < Math.min(frames.length, 30); i++) {
         initialChunk.push(loadImg(i));
       }
       await Promise.all(initialChunk);
 
-      // Background load the rest
+      // 2. Background Sequential Load
       for(let i=30; i < frames.length; i++) {
+        if (currentCycle !== loadCycleRef.current) break;
         loadImg(i);
-        if (i % 20 === 0) await new Promise(r => setTimeout(r, 50));
+        // Throttle requests to avoid saturating the browser's parallel connection limit
+        if (i % 10 === 0) await new Promise(r => setTimeout(r, 20));
       }
     };
 
@@ -79,27 +142,22 @@ export default function ScrollTelling({
   const draw = (index: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
     const img = imagesRef.current[index];
-    
-    // Hardened Logic: Don't clear if image isn't ready
     if (!img || img.naturalWidth === 0) return; 
 
-    if (index === lastDrawnIndexRef.current && canvas.width > 0) return;
+    // Avoid redundant draws on the same frame index
+    if (index === lastDrawnIndexRef.current) return;
     lastDrawnIndexRef.current = index;
 
-    const cw = window.innerWidth;
-    const ch = window.innerHeight;
-    
-    if (canvas.width !== cw || canvas.height !== ch) {
-      canvas.width = cw;
-      canvas.height = ch;
-    }
+    const { width: cw, height: ch } = canvasSizeRef.current;
+    if (cw === 0 || ch === 0) return;
 
     const imgRatio = img.naturalWidth / img.naturalHeight;
     const canvasRatio = cw / ch;
+    
     let drawWidth, drawHeight, x, y;
 
     if (canvasRatio > imgRatio) {
@@ -114,16 +172,13 @@ export default function ScrollTelling({
       y = 0;
     }
 
-    ctx.clearRect(0, 0, cw, ch);
     ctx.drawImage(img, x, y, drawWidth, drawHeight);
   };
 
-  useEffect(() => {
-    return frameIndex.on("change", (v) => {
-      const idx = Math.round(v);
-      requestAnimationFrame(() => draw(idx));
-    });
-  }, [frameIndex]);
+  useMotionValueEvent(frameIndex, "change", (v) => {
+    const idx = Math.round(v);
+    requestAnimationFrame(() => draw(idx));
+  });
 
   return (
     <ScrollTellingContext.Provider value={scrollYProgress}>
@@ -135,19 +190,21 @@ export default function ScrollTelling({
         <div className="sticky top-0 h-screen w-full overflow-hidden bg-black z-0 will-change-transform">
           <canvas 
             ref={canvasRef} 
-            className="w-full h-full object-cover" 
+            style={{ transform: "translate3d(0,0,0)" }}
+            className="w-full h-full object-cover will-change-transform" 
           />
           
           <div className="absolute inset-0 z-10 pointer-events-none">
             {children}
           </div>
 
-          {/* Diagnostic Overlay */}
           <div className="absolute bottom-4 right-4 text-[10px] font-mono text-white/20 select-none pointer-events-none z-20">
-            ENGINE: HARDENED_V3 | LOADED: {Math.round((loadedCount / frames.length) * 100)}%
+            ENGINE: EMERGENCY_FIX_V5 | LOADED: {Math.round((loadedCount / frames.length) * 100)}%
           </div>
         </div>
       </section>
     </ScrollTellingContext.Provider>
   );
 }
+
+

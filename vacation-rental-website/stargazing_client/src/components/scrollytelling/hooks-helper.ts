@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useState, useEffect } from "react";
-import { useTransform, MotionValue } from "framer-motion";
+import { useTransform } from "framer-motion";
 import { ScrollTellingContext } from "./context";
 
 /**
@@ -22,10 +22,7 @@ export function useScrollTellingHooks(start: number, end: number) {
     clamp: true
   });
 
-  // Track active state manually to avoid hook rule violations (useEffect is fine)
-  // Note: we can't call useScrollWindow here because of conditional hook rules,
-  // so we re-implement the logic slightly.
-  
+  // Track active state with stable effect
   useEffect(() => {
     return context.on("change", (v) => {
       const isActive = v >= start && v <= end;
@@ -40,3 +37,5 @@ export function useScrollTellingHooks(start: number, end: number) {
     progress: windowProgress
   };
 }
+
+

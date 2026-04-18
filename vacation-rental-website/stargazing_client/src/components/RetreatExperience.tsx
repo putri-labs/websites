@@ -16,12 +16,14 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
     <SmoothScroll>
       <main className="bg-black">
         <ScrollTelling frames={frames} scrollHeight="1200vh">
-          
-          {/* Global Dark Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/60 pointer-events-none z-20" />
+          {/* Global Cinematic Overlays */}
+          <div className="absolute inset-0 bg-black/20 pointer-events-none z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_70%,rgba(0,0,0,0.8)_100%)] pointer-events-none z-20" />
+          <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-black/80 to-transparent pointer-events-none z-20" />
+          <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-20" />
 
           {/* --- SCENES --- */}
-          
+
           <Hero />
 
           <StorySection
@@ -64,22 +66,29 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
             subheadline="Secure your stay for the 2026 Stargazing season."
           />
 
-
           {/* Progress Indicator */}
-          <div className="fixed bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-40 opacity-40">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-[#d4af37]">Scroll to Explore</p>
-            <div className="w-[1px] h-20 bg-gradient-to-b from-[#d4af37] to-transparent" />
+          <div className="fixed bottom-1 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-40 opacity-100">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-[#ffd95f]">
+              Scroll to Explore
+            </p>
+            <div className="w-[1px] h-20 bg-gradient-to-b from-[#ffd95f] to-transparent" />
           </div>
         </ScrollTelling>
 
         {/* Footer */}
         <section className="relative z-50 bg-neutral-950 py-32 px-6 border-t border-white/5">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">Begin Your Story</h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">
+              Begin Your Story
+            </h2>
             <div className="flex justify-center gap-8 text-sm text-neutral-500">
               <span>© 2026 Stargazing Retreat</span>
-              <a href="#" className="hover:text-white transition">Instagram</a>
-              <a href="#" className="hover:text-white transition">Contact</a>
+              <a href="#" className="hover:text-white transition">
+                Instagram
+              </a>
+              <a href="#" className="hover:text-white transition">
+                Contact
+              </a>
             </div>
           </div>
         </section>
