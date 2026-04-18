@@ -1,0 +1,37 @@
+import type { Metadata } from "next";
+import { Inter, Cormorant_Garamond, Outfit } from "next/font/google";
+import Navbar from "@/components/Navbar";
+import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const cormorant = Cormorant_Garamond({ 
+  subsets: ["latin"], 
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-cormorant" 
+});
+const outfit = Outfit({ 
+  subsets: ["latin"], 
+  variable: "--font-outfit" 
+});
+
+export const metadata: Metadata = {
+  title: "Stargazing - A Luxury Escape",
+  description: "Step into the stay. Not just a stay — an experience.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" className="dark">
+      <body className={`${inter.variable} ${cormorant.variable} ${outfit.variable} font-sans antialiased bg-background text-foreground`}>
+        <Navbar />
+        {children}
+      </body>
+    </html>
+  );
+}
+
+
