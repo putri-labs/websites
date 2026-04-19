@@ -7,6 +7,7 @@ import StorySection from "@/components/StorySection";
 import MagazineSection from "@/components/MagazineSection";
 import TripleColumnSection from "@/components/TripleColumnSection";
 import Hero from "@/components/Hero";
+import ReviewSection from "@/components/ReviewSection";
 
 interface RetreatExperienceProps {
   frames: string[];
@@ -44,37 +45,39 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
             items={[
               {
                 title: "Our Mission",
-                content: "Provide guests with unforgettable stays designed around the stars. We aim to offer more than just a getaway; we craft experiences where the night sky is at the heart of every moment."
+                content:
+                  "Provide guests with unforgettable stays designed around the stars. We aim to offer more than just a getaway; we craft experiences where the night sky is at the heart of every moment.",
               },
               {
                 title: "Our Values",
-                content: "Guest experience is our north star. We prioritize doing right by our guests, ensuring every stay is seamless, memorable, and designed around comfort and adventure under the stars."
+                content:
+                  "Guest experience is our north star. We prioritize doing right by our guests, ensuring every stay is seamless, memorable, and designed around comfort and adventure under the stars.",
               },
               {
                 title: "Behind the Homes",
-                content: "As both architects and manufacturers, we design each home with the guest experience in mind. Every detail is crafted to offer a seamless connection to the stars, ensuring comfort and adventure in a space built specifically for unforgettable stays.",
+                content:
+                  "As both architects and manufacturers, we design each home with the guest experience in mind. Every detail is crafted to offer a seamless connection to the stars, ensuring comfort and adventure in a space built specifically for unforgettable stays.",
                 link: {
                   text: "stargazinghomes.com",
-                  url: "https://stargazinghomes.com"
-                }
-              }
+                  url: "https://stargazinghomes.com",
+                },
+              },
             ]}
           />
 
-          <StorySection
+          <ReviewSection
             start={0.61}
             end={0.78}
-            headline="Vast Exploration"
-            subheadline="Venture beyond the retreat. Guided journeys into the untouched wilderness of the high Sierras."
+            headline="What our guests have to say"
           />
 
-          <StorySection
+          {/* <StorySection
             start={0.85}
             end={1.02}
             icon={Camera}
             headline="Timeless Perspectives"
             subheadline="Capture the fleeting beauty of the wild. A space designed for creators to reconnect with their vision."
-          />
+          /> */}
 
           {/* Final CTA */}
           {/* <StorySection
@@ -94,7 +97,7 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
         </ScrollTelling>
 
         {/* Footer */}
-        <section className="relative z-50 bg-neutral-950 py-32 px-6 border-t border-white/5">
+        {/* <section className="relative z-50 bg-neutral-950 py-32 px-6 border-t border-white/5">
           <div className="max-w-6xl mx-auto text-center">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">
               Begin Your Story
@@ -109,7 +112,7 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
               </a>
             </div>
           </div>
-        </section>
+        </section> */}
       </main>
     </SmoothScroll>
   );
