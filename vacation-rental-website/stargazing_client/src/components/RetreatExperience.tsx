@@ -8,6 +8,7 @@ import MagazineSection from "@/components/MagazineSection";
 import TripleColumnSection from "@/components/TripleColumnSection";
 import Hero from "@/components/Hero";
 import ReviewSection from "@/components/ReviewSection";
+import FooterSection from "@/components/FooterSection";
 
 interface RetreatExperienceProps {
   frames: string[];
@@ -71,21 +72,7 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
             headline="What our guests have to say"
           />
 
-          {/* <StorySection
-            start={0.85}
-            end={1.02}
-            icon={Camera}
-            headline="Timeless Perspectives"
-            subheadline="Capture the fleeting beauty of the wild. A space designed for creators to reconnect with their vision."
-          /> */}
-
-          {/* Final CTA */}
-          {/* <StorySection
-            start={1.05}
-            end={1.22}
-            headline="Your Journey Awaits"
-            subheadline="Secure your stay for the 2026 Stargazing season."
-          /> */}
+          <FooterSection start={0.82} end={1.0} />
 
           {/* Progress Indicator */}
           <div className="fixed bottom-1 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-40 opacity-100">
@@ -95,24 +82,6 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
             <div className="w-[1px] h-20 bg-gradient-to-b from-[#ffd95f] to-transparent" />
           </div>
         </ScrollTelling>
-
-        {/* Footer */}
-        {/* <section className="relative z-50 bg-neutral-950 py-32 px-6 border-t border-white/5">
-          <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-8">
-              Begin Your Story
-            </h2>
-            <div className="flex justify-center gap-8 text-sm text-neutral-500">
-              <span>© 2026 Stargazing Retreat</span>
-              <a href="#" className="hover:text-white transition">
-                Instagram
-              </a>
-              <a href="#" className="hover:text-white transition">
-                Contact
-              </a>
-            </div>
-          </div>
-        </section> */}
       </main>
     </SmoothScroll>
   );

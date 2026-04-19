@@ -50,7 +50,7 @@ export default function Navbar() {
           href="#"
           className="text-white/80 hover:text-white transition-colors"
         >
-          Journal
+          Attractions
         </a>
       </div>
 
