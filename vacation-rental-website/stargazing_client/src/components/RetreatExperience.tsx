@@ -5,6 +5,7 @@ import { MapPin, Wind, Compass, Camera } from "lucide-react";
 import SmoothScroll from "@/components/SmoothScroll";
 import StorySection from "@/components/StorySection";
 import MagazineSection from "@/components/MagazineSection";
+import TripleColumnSection from "@/components/TripleColumnSection";
 import Hero from "@/components/Hero";
 
 interface RetreatExperienceProps {
@@ -28,8 +29,8 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
           <Hero />
 
           <MagazineSection
-            start={0.15}
-            end={0.35}
+            start={0.13}
+            end={0.3}
             headline="What is Stargazing?"
             subheadline="A sanctuary for the soul, carved into silence."
             copy={[
@@ -37,37 +38,51 @@ export default function RetreatExperience({ frames }: RetreatExperienceProps) {
             ]}
           />
 
-          <StorySection
-            start={0.3}
-            end={0.45}
-            icon={Wind}
-            headline="Bespoke Luxury"
-            subheadline="Experience interiors that breathe. Every detail curated to bridge the gap between human comfort and wild nature."
+          <TripleColumnSection
+            start={0.37}
+            end={0.54}
+            items={[
+              {
+                title: "Our Mission",
+                content: "Provide guests with unforgettable stays designed around the stars. We aim to offer more than just a getaway; we craft experiences where the night sky is at the heart of every moment."
+              },
+              {
+                title: "Our Values",
+                content: "Guest experience is our north star. We prioritize doing right by our guests, ensuring every stay is seamless, memorable, and designed around comfort and adventure under the stars."
+              },
+              {
+                title: "Behind the Homes",
+                content: "As both architects and manufacturers, we design each home with the guest experience in mind. Every detail is crafted to offer a seamless connection to the stars, ensuring comfort and adventure in a space built specifically for unforgettable stays.",
+                link: {
+                  text: "stargazinghomes.com",
+                  url: "https://stargazinghomes.com"
+                }
+              }
+            ]}
           />
 
           <StorySection
-            start={0.5}
-            end={0.65}
-            icon={Compass}
+            start={0.61}
+            end={0.78}
             headline="Vast Exploration"
             subheadline="Venture beyond the retreat. Guided journeys into the untouched wilderness of the high Sierras."
           />
 
           <StorySection
-            start={0.7}
-            end={0.85}
+            start={0.85}
+            end={1.02}
             icon={Camera}
             headline="Timeless Perspectives"
             subheadline="Capture the fleeting beauty of the wild. A space designed for creators to reconnect with their vision."
           />
 
           {/* Final CTA */}
-          <StorySection
-            start={0.9}
-            end={0.98}
+          {/* <StorySection
+            start={1.05}
+            end={1.22}
             headline="Your Journey Awaits"
             subheadline="Secure your stay for the 2026 Stargazing season."
-          />
+          /> */}
 
           {/* Progress Indicator */}
           <div className="fixed bottom-1 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-40 opacity-100">
