@@ -113,7 +113,7 @@ export default function ScrollTelling({
               // Ignore decoding errors; the image is still usable via standard drawImage
             });
           }
-        } catch (err) {
+        } catch {
           // If a frame fails, we don't block the whole sequence
           console.warn(`Frame ${idx} failed to load, skipping...`);
         }
@@ -137,7 +137,7 @@ export default function ScrollTelling({
     };
 
     preload();
-  }, [frames]);
+  }, [frames, frameIndex]);
 
   const draw = (index: number) => {
     const canvas = canvasRef.current;

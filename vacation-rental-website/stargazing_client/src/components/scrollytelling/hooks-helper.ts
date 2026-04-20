@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useState, useEffect } from "react";
-import { useTransform } from "framer-motion";
+import { useTransform, useMotionValue } from "framer-motion";
 import { ScrollTellingContext } from "./context";
 
 /**
@@ -10,30 +10,29 @@ import { ScrollTellingContext } from "./context";
  */
 export function useScrollTellingHooks(start: number, end: number) {
   const context = useContext(ScrollTellingContext);
-  const [active, setActive] = useState(false);
-
-  // If no context, we return a mock state that is always "active" (or handled by caller)
-  if (!context) {
-    return { active: true, progress: null };
-  }
+  const fallbackContext = useMotionValue(0);
+  const actualContext = context || fallbackContext;
+  
+  const [active, setActive] = useState(!context);
 
   // Map the global progress to a 0-1 range within the window
-  const windowProgress = useTransform(context, [start, end], [0, 1], {
+  const windowProgress = useTransform(actualContext, [start, end], [0, 1], {
     clamp: true
   });
 
   // Track active state with stable effect
   useEffect(() => {
-    return context.on("change", (v) => {
+    if (!context) return;
+    return actualContext.on("change", (v) => {
       const isActive = v >= start && v <= end;
       if (isActive !== active) {
         setActive(isActive);
       }
     });
-  }, [context, start, end, active]);
+  }, [actualContext, start, end, active, context]);
 
   return {
-    active,
+    active: context ? active : true,
     progress: windowProgress
   };
 }

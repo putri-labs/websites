@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useScrollTellingHooks } from "./scrollytelling/hooks-helper";
 
@@ -21,10 +21,10 @@ export default function MagazineSection({
   start = 0,
   end = 1,
 }: MagazineSectionProps) {
-  const { active, progress } = useScrollTellingHooks(start, end);
+  const { active } = useScrollTellingHooks(start, end);
 
   // Animation variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -35,7 +35,7 @@ export default function MagazineSection({
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,

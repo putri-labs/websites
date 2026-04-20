@@ -2,7 +2,6 @@
 
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { useScrollTellingHooks } from "./scrollytelling/hooks-helper";
-import { cn } from "@/lib/utils";
 import AvailabilityBar from "./AvailabilityBar";
 import { useRef } from "react";
 

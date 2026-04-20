@@ -1,10 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { motion, Variants } from "framer-motion";
 
 export default function AvailabilityBar() {
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -15,7 +14,7 @@ export default function AvailabilityBar() {
     },
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 10 },
     show: {
       opacity: 1,

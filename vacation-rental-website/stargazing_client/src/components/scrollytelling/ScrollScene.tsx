@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useScrollWindow } from "./hooks";
 import { ReactNode } from "react";
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useScrollTellingHooks } from "./scrollytelling/hooks-helper";
+import React from "react";
 
 interface StorySectionProps {
   headline?: string;
@@ -11,22 +11,18 @@ interface StorySectionProps {
   isHero?: boolean;
   start?: number;
   end?: number;
-  icon?: any;
+  icon?: React.ElementType;
 }
 
 export default function StorySection({
   headline,
   subheadline,
   className,
-  isHero,
   start = 0,
   end = 1,
   icon: Icon,
 }: StorySectionProps) {
-  const { active, progress } = useScrollTellingHooks(start, end);
-
-  // Parallax / Entrance animations
-  const y = progress ? (isHero ? 0 : 100) : 0;
+  const { active } = useScrollTellingHooks(start, end);
 
   return (
     <div

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useScrollTellingHooks } from "./scrollytelling/hooks-helper";
 import { Globe, Send, MessageCircle, Mail, ArrowUpRight } from "lucide-react";
@@ -46,9 +46,9 @@ export default function FooterSection({
   end = 1,
   className,
 }: FooterSectionProps) {
-  const { active, progress } = useScrollTellingHooks(start, end);
+  const { active } = useScrollTellingHooks(start, end);
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -59,7 +59,7 @@ export default function FooterSection({
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
@@ -68,15 +68,7 @@ export default function FooterSection({
     },
   };
 
-  const wordmarkVariants = {
-    hidden: { opacity: 0, scale: 1.1, filter: "blur(10px)" },
-    visible: {
-      opacity: 0.05,
-      scale: 1,
-      filter: "blur(0px)",
-      transition: { duration: 1.5, ease: "easeOut" },
-    },
-  };
+
 
   return (
     <div

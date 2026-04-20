@@ -94,7 +94,7 @@ export default function ReviewSection({
 
     // Attach listener with passive: false AND capture: true to intercept before global scroll listeners
     container.addEventListener("wheel", handleWheel, { passive: false, capture: true });
-    return () => container.removeEventListener("wheel", handleWheel, { capture: true } as any);
+    return () => container.removeEventListener("wheel", handleWheel, { capture: true } as EventListenerOptions);
   }, [isHovered, active, targetX]);
 
   return (
@@ -161,7 +161,7 @@ export default function ReviewSection({
                     ))}
                   </div>
                   <p className="text-lg md:text-xl font-serif text-white/80 leading-relaxed italic tracking-wide">
-                    "{review.quote}"
+                    &quot;{review.quote}&quot;
                   </p>
                 </div>
 

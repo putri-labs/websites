@@ -1,9 +1,7 @@
 "use client";
 
 import { ScrollTelling } from "@/components/scrollytelling";
-import { MapPin, Wind, Compass, Camera } from "lucide-react";
 import SmoothScroll from "@/components/SmoothScroll";
-import StorySection from "@/components/StorySection";
 import MagazineSection from "@/components/MagazineSection";
 import TripleColumnSection from "@/components/TripleColumnSection";
 import Hero from "@/components/Hero";
