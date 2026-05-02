@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VacayStack — A scroll-telling site for your rental.</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html,body{margin:0;padding:0;background:#0B0907;color:#FAF7F2;font-family:var(--font-body-vs);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:rgba(193,155,118,.4);color:#FAF7F2}
+
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:120;opacity:.06;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>");
+    animation: grain 1.6s steps(4) infinite;
+  }
+  @keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-2%,1%)}50%{transform:translate(1%,-1%)}75%{transform:translate(-1%,2%)}100%{transform:translate(0,0)}}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px;position:relative}
+  .wrap-narrow{max-width:980px;margin:0 auto;padding:0 32px;position:relative}
+
+  /* NAV */
+  nav.top{position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:100;
+    background:rgba(11,9,7,.6);backdrop-filter:blur(24px) saturate(140%);-webkit-backdrop-filter:blur(24px) saturate(140%);
+    border:.5px solid rgba(250,247,242,.14);border-radius:9999px;padding:8px 8px 8px 24px;
+    display:flex;align-items:center;gap:32px;box-shadow:0 10px 50px rgba(0,0,0,.4)}
+  nav.top .wm{font-family:var(--font-display-vs);font-size:17px;font-weight:500;letter-spacing:-.01em}
+  nav.top .wm .dot{color:var(--vs-gold)}
+  nav.top .links{display:flex;gap:28px}
+  nav.top .links a{color:rgba(250,247,242,.6);font-size:13px;text-decoration:none;transition:color .3s var(--ease-expo)}
+  nav.top .links a:hover{color:#FAF7F2}
+  nav.top .cta{background:var(--vs-gold);color:#0B0907;padding:9px 18px;border-radius:9999px;font-size:13px;font-weight:600;border:0;cursor:pointer;transition:transform .3s var(--ease-expo),box-shadow .3s}
+  nav.top .cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(193,155,118,.4)}
+
+  /* PRE-LAUNCH BAR */
+  .prelaunch{position:fixed;top:0;left:0;right:0;z-index:99;background:rgba(193,155,118,.08);border-bottom:.5px solid rgba(193,155,118,.25);text-align:center;padding:9px 16px;font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--vs-gold);backdrop-filter:blur(14px)}
+  .prelaunch span{color:rgba(250,247,242,.6);margin-left:10px;letter-spacing:.18em}
+
+  /* HERO */
+  .hero{min-height:100vh;position:relative;display:flex;flex-direction:column;justify-content:center;padding:160px 0 100px;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(ellipse 80% 60% at 50% 35%, rgba(193,155,118,.18), transparent 60%),
+      radial-gradient(circle at 18% 80%, rgba(181,100,60,.12), transparent 40%),
+      radial-gradient(circle at 88% 25%, rgba(92,107,74,.08), transparent 35%);pointer-events:none}
+  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,#0B0907 100%);pointer-events:none}
+
+  .hero-eye{font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--vs-gold);opacity:.85;margin-bottom:36px;display:inline-flex;align-items:center;gap:14px;position:relative}
+  .hero-eye::before{content:"";display:inline-block;width:24px;height:1px;background:var(--vs-gold);opacity:.6}
+  .hero-eye .dot-live{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--vs-gold);box-shadow:0 0 10px rgba(193,155,118,.7);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  h1.head{font-family:var(--font-display-vs);font-weight:300;font-size:clamp(60px,9.5vw,156px);line-height:.94;letter-spacing:-.035em;margin:0;max-width:14ch;color:#FAF7F2;position:relative;z-index:1}
+  h1.head em{font-style:italic;color:var(--vs-gold);font-weight:300}
+
+  .hero-sub{margin-top:44px;font-size:19px;line-height:1.6;color:rgba(250,247,242,.7);max-width:620px;font-weight:300;position:relative;z-index:1}
+  .hero-sub strong{color:#FAF7F2;font-weight:500}
+
+  .hero-cta{display:flex;gap:14px;margin-top:48px;align-items:center;flex-wrap:wrap;position:relative;z-index:1}
+  .btn-gold{background:var(--vs-gold);color:#0B0907;border:0;padding:18px 30px;border-radius:9999px;font-family:var(--font-body-vs);font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:10px;transition:transform .3s var(--ease-expo),box-shadow .3s}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(193,155,118,.35)}
+  .btn-ghost{background:transparent;color:#FAF7F2;border:.5px solid rgba(250,247,242,.3);padding:18px 30px;border-radius:9999px;font-size:14px;font-weight:500;cursor:pointer;transition:border-color .3s,background .3s}
+  .btn-ghost:hover{border-color:#FAF7F2;background:rgba(250,247,242,.05)}
+
+  .terms{margin-top:32px;display:flex;gap:36px;flex-wrap:wrap;font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(250,247,242,.5);position:relative;z-index:1}
+  .terms span{display:inline-flex;align-items:center;gap:10px}
+  .terms span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--vs-gold);opacity:.7}
+
+  .coord{position:absolute;font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.25em;color:rgba(193,155,118,.35);text-transform:uppercase;pointer-events:none}
+  .coord.tr{top:80px;right:48px}
+  .coord.bl{bottom:60px;left:48px}
+
+  /* HONEST blurb */
+  .honest{padding:80px 0 120px;border-top:.5px solid rgba(250,247,242,.06);position:relative}
+  .honest::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(193,155,118,.05), transparent 70%);pointer-events:none}
+  .honest-grid{display:grid;grid-template-columns:auto 1fr;gap:80px;align-items:start;position:relative}
+  .honest-tag{font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--vs-gold);writing-mode:vertical-rl;transform:rotate(180deg);opacity:.7;padding-top:6px}
+  .honest p{margin:0;font-family:var(--font-display-vs);font-weight:300;font-size:clamp(28px,3.4vw,44px);line-height:1.3;letter-spacing:-.015em;color:rgba(250,247,242,.85);max-width:24ch}
+  .honest p em{font-style:italic;color:var(--vs-gold)}
+  .honest p .dim{color:rgba(250,247,242,.45)}
+  .signed{margin-top:40px;font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(250,247,242,.5)}
+  .signed strong{color:var(--vs-gold);font-weight:500;letter-spacing:.25em}
+
+  /* SECTIONS */
+  .section-eye{font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--vs-gold);opacity:.8;margin-bottom:32px;display:inline-flex;align-items:center;gap:14px}
+  .section-eye .num-pre{color:rgba(250,247,242,.4)}
+  .section-eye::before{content:"";display:inline-block;width:24px;height:1px;background:var(--vs-gold);opacity:.6}
+
+  h2.section{font-family:var(--font-display-vs);font-weight:300;font-size:clamp(44px,6.4vw,92px);letter-spacing:-.03em;line-height:1.0;margin:0;max-width:18ch}
+  h2.section em{font-style:italic;color:var(--vs-gold);font-weight:300}
+
+  /* WHAT YOU GET */
+  .what{padding:140px 0;border-top:.5px solid rgba(250,247,242,.06)}
+  .what-head{display:grid;grid-template-columns:1.1fr .9fr;gap:80px;align-items:end;margin-bottom:80px}
+  .what-head p{margin:0;font-size:17px;line-height:1.7;color:rgba(250,247,242,.65);font-weight:300;max-width:46ch}
+  .what-head p strong{color:#FAF7F2;font-weight:500}
+
+  /* SCROLL DEMO — the centerpiece */
+  .demo-frame{border:.5px solid rgba(250,247,242,.12);border-radius:6px;background:#0E0B08;overflow:hidden;position:relative}
+  .demo-bar{padding:14px 20px;border-bottom:.5px solid rgba(250,247,242,.08);display:flex;align-items:center;gap:14px;font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(250,247,242,.45)}
+  .demo-bar .dots{display:flex;gap:6px}
+  .demo-bar .dots i{width:9px;height:9px;border-radius:50%;background:rgba(250,247,242,.18)}
+  .demo-bar .url{flex:1;text-align:center}
+  .demo-bar .url em{color:var(--vs-gold);font-style:normal}
+  .demo-bar .lock{color:rgba(250,247,242,.4)}
+
+  .demo-stage{position:relative;height:560px;overflow:hidden;background:#0B0907}
+  .scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px;text-align:center;opacity:0;transition:opacity .9s var(--ease-expo);pointer-events:none}
+  .scene.active{opacity:1;pointer-events:auto}
+  .scene .eye{font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--vs-gold);opacity:.7;margin-bottom:24px}
+  .scene h3{font-family:var(--font-display-vs);font-weight:300;font-style:italic;font-size:clamp(72px,9vw,140px);line-height:.92;letter-spacing:-.04em;margin:0;text-shadow:0 6px 40px rgba(193,155,118,.3)}
+  .scene .sub{font-family:var(--font-body-vs);font-weight:300;letter-spacing:.4em;text-transform:lowercase;font-size:15px;color:rgba(250,247,242,.6);margin-top:18px}
+  .scene .poet{margin-top:36px;max-width:480px;font-family:var(--font-accent-vs);font-style:italic;font-size:15px;line-height:1.7;color:rgba(250,247,242,.6);font-weight:400}
+
+  /* Backgrounds per scene */
+  .scene-1{background:radial-gradient(ellipse 70% 50% at 50% 35%, rgba(193,155,118,.2), transparent 65%),#0B0907}
+  .scene-2{background:linear-gradient(180deg,#1A140E 0%,#0B0907 100%);}
+  .scene-2 .gal{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:100%;max-width:780px;margin-top:0}
+  .scene-2 .tile{aspect-ratio:5/4;position:relative;overflow:hidden;border:.5px solid rgba(250,247,242,.05)}
+  .t1{background:linear-gradient(135deg,#2B2419,#5C6B4A)}
+  .t2{background:linear-gradient(135deg,#3B2E1E,#C19B76)}
+  .t3{background:linear-gradient(135deg,#1A1A1A,#3a3a3a)}
+  .t4{background:linear-gradient(135deg,#5C4A3A,#B5643C)}
+  .scene-2 .tile::after{content:"";position:absolute;inset:0;background:radial-gradient(at 40% 30%,rgba(255,255,255,.15),transparent 55%)}
+  .scene-2 .tile .cap{position:absolute;left:18px;bottom:14px;font-family:var(--font-mono-pl);font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+  .scene-3{background:linear-gradient(180deg,#0B0907 0%,#1A140E 100%);}
+  .scene-3 .form{background:rgba(250,247,242,.03);border:.5px solid rgba(250,247,242,.14);padding:28px 32px;border-radius:4px;width:100%;max-width:420px;text-align:left}
+  .scene-3 .field{padding:12px 0;border-bottom:.5px solid rgba(250,247,242,.12);display:flex;justify-content:space-between;align-items:baseline}
+  .scene-3 .field:last-child{border:0}
+  .scene-3 .field .k{font-family:var(--font-mono-pl);font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(250,247,242,.5)}
+  .scene-3 .field .v{font-family:var(--font-display-vs);font-size:17px;font-weight:400}
+  .scene-3 .field .v em{color:var(--vs-gold);font-style:italic}
+  .scene-3 .reserve{margin-top:18px;width:100%;background:var(--vs-gold);color:#0B0907;border:0;padding:14px;font-family:var(--font-mono-pl);font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}
+
+  .demo-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-top:.5px solid rgba(250,247,242,.08);background:rgba(0,0,0,.25)}
+  .demo-dots{display:flex;gap:8px;align-items:center}
+  .demo-dots button{background:transparent;border:.5px solid rgba(250,247,242,.25);color:rgba(250,247,242,.5);font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.2em;padding:8px 14px;border-radius:9999px;cursor:pointer;transition:all .3s var(--ease-expo)}
+  .demo-dots button.active{background:var(--vs-gold);border-color:var(--vs-gold);color:#0B0907;font-weight:600}
+  .demo-hint{font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(250,247,242,.4)}
+
+  .demo-caption{margin-top:22px;font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(250,247,242,.4);text-align:center}
+  .demo-caption em{color:var(--vs-gold);font-style:normal}
+
+  /* THREE BENEFITS */
+  .perks{padding:140px 0;border-top:.5px solid rgba(250,247,242,.06)}
+  .perks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(250,247,242,.08);border:.5px solid rgba(250,247,242,.1);margin-top:80px}
+  .perk{background:#0B0907;padding:48px 36px}
+  .perk .pn{font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.3em;color:var(--vs-gold);text-transform:uppercase;margin-bottom:24px;opacity:.8}
+  .perk h4{font-family:var(--font-display-vs);font-weight:300;font-size:30px;line-height:1.1;letter-spacing:-.02em;margin:0 0 14px}
+  .perk h4 em{font-style:italic;color:var(--vs-gold)}
+  .perk p{margin:0;font-size:14px;line-height:1.7;color:rgba(250,247,242,.6);font-weight:300}
+
+  /* DEAL */
+  .deal{padding:140px 0;border-top:.5px solid rgba(250,247,242,.06);position:relative;
+    background:radial-gradient(ellipse 70% 60% at 50% 50%, rgba(193,155,118,.06), transparent 70%)}
+  .deal-head{margin-bottom:64px}
+  .deal-head h2{margin-top:24px}
+  .deal-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(250,247,242,.08);border:.5px solid rgba(250,247,242,.1);border-radius:6px;overflow:hidden}
+  .deal-col{background:#0B0907;padding:48px 44px}
+  .deal-col h5{font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin:0 0 28px}
+  .deal-col.you h5{color:var(--vs-gold)}
+  .deal-col.us h5{color:rgba(250,247,242,.55)}
+  .deal-col ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:18px}
+  .deal-col li{display:grid;grid-template-columns:auto 1fr;gap:14px;font-size:15px;line-height:1.55;color:rgba(250,247,242,.78);align-items:start;font-weight:300}
+  .deal-col li .mk{font-family:var(--font-mono-pl);font-size:10px;color:var(--vs-gold);letter-spacing:.15em;padding-top:4px}
+  .deal-col.us li .mk{color:rgba(250,247,242,.4)}
+  .deal-col .foot-line{margin-top:32px;font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(250,247,242,.45)}
+  .deal-col .foot-line em{color:var(--vs-gold);font-style:normal}
+
+  /* PROCESS */
+  .process{padding:140px 0;border-top:.5px solid rgba(250,247,242,.06)}
+  .process-list{margin-top:80px;border-top:.5px solid rgba(250,247,242,.1)}
+  .pstep{display:grid;grid-template-columns:80px 1fr 1.1fr 150px;gap:48px;padding:36px 0;border-bottom:.5px solid rgba(250,247,242,.1);align-items:baseline;transition:background .3s}
+  .pstep:hover{background:rgba(193,155,118,.03)}
+  .pstep .pn2{font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.3em;color:var(--vs-gold);opacity:.7;text-transform:uppercase;width:80px}
+  .pstep h4{font-family:var(--font-display-vs);font-weight:300;font-size:32px;letter-spacing:-.02em;margin:0;line-height:1.1}
+  .pstep h4 em{font-style:italic;color:var(--vs-gold)}
+  .pstep p{margin:0;font-size:14px;line-height:1.6;color:rgba(250,247,242,.6);max-width:38ch;font-weight:300}
+  .pstep .when{font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,247,242,.5);text-align:right}
+
+  /* FAQ */
+  .faq{padding:140px 0;border-top:.5px solid rgba(250,247,242,.06)}
+  .faq-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:80px;margin-top:24px}
+  .faq-list{display:flex;flex-direction:column}
+  .qa{padding:28px 0;border-top:.5px solid rgba(250,247,242,.1)}
+  .qa:last-child{border-bottom:.5px solid rgba(250,247,242,.1)}
+  .qa h5{font-family:var(--font-display-vs);font-weight:400;font-size:22px;letter-spacing:-.01em;margin:0 0 12px;line-height:1.3}
+  .qa h5 em{color:var(--vs-gold);font-style:italic}
+  .qa p{margin:0;font-size:14px;line-height:1.7;color:rgba(250,247,242,.62);font-weight:300}
+
+  /* CTA — single, sharper */
+  .cta{padding:160px 0 140px;border-top:.5px solid rgba(250,247,242,.06);position:relative;
+    background:linear-gradient(180deg,transparent 0%,rgba(193,155,118,.05) 50%,transparent 100%)}
+  .cta-inner{max-width:780px;margin:0 auto;text-align:center}
+  .cta h2{margin:24px auto 0;font-family:var(--font-display-vs);font-weight:300;font-size:clamp(48px,7.2vw,112px);line-height:.95;letter-spacing:-.04em}
+  .cta h2 em{font-style:italic;color:var(--vs-gold)}
+  .cta-sub{margin:36px auto 0;font-size:17px;line-height:1.7;color:rgba(250,247,242,.65);max-width:520px;font-weight:300}
+  .cta-sub em{color:var(--vs-gold);font-style:italic}
+
+  .form-card{margin:56px auto 0;max-width:560px;background:rgba(250,247,242,.03);border:.5px solid rgba(250,247,242,.14);border-radius:6px;padding:32px;text-align:left}
+  .form-card .field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+  .form-card label{font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:rgba(250,247,242,.55)}
+  .form-card input,.form-card select,.form-card textarea{background:rgba(0,0,0,.3);border:.5px solid rgba(250,247,242,.18);color:#FAF7F2;padding:14px 16px;border-radius:4px;font-family:var(--font-body-vs);font-size:14px;outline:none;transition:border-color .3s}
+  .form-card input:focus,.form-card select:focus,.form-card textarea:focus{border-color:var(--vs-gold)}
+  .form-card input::placeholder,.form-card textarea::placeholder{color:rgba(250,247,242,.3)}
+  .form-card textarea{resize:vertical;min-height:80px;font-family:var(--font-body-vs)}
+  .form-card .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .form-card button{margin-top:12px;width:100%;background:var(--vs-gold);color:#0B0907;border:0;padding:18px;border-radius:9999px;font-family:var(--font-body-vs);font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:transform .3s,box-shadow .3s}
+  .form-card button:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(193,155,118,.35)}
+  .form-card .micro{margin-top:18px;font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(250,247,242,.45);text-align:center}
+  .form-card .micro em{color:var(--vs-gold);font-style:normal}
+
+  /* FOOTER */
+  footer{padding:100px 0 50px;border-top:.5px solid rgba(250,247,242,.06)}
+  .foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:48px;align-items:start;margin-bottom:64px}
+  .foot-wm{font-family:var(--font-display-vs);font-weight:300;font-size:60px;letter-spacing:-.03em;line-height:1;color:rgba(250,247,242,.85)}
+  .foot-wm .dot{color:var(--vs-gold)}
+  .foot-tag{font-family:var(--font-accent-vs);font-style:italic;font-size:17px;color:rgba(250,247,242,.55);margin-top:16px;max-width:380px;line-height:1.55;font-weight:400}
+  .fcol h6{font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--vs-gold);opacity:.7;margin:0 0 22px;font-weight:600}
+  .fcol ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+  .fcol a{color:rgba(250,247,242,.55);font-size:13px;text-decoration:none;transition:color .3s}
+  .fcol a:hover{color:#FAF7F2}
+  .foot-bottom{display:flex;justify-content:space-between;padding-top:30px;border-top:.5px solid rgba(250,247,242,.08);font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(250,247,242,.35);flex-wrap:wrap;gap:14px}
+  .foot-bottom a{color:var(--vs-gold);text-decoration:none}
+
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .9s var(--ease-expo),transform .9s var(--ease-expo)}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+
+  @media (max-width:960px){
+    nav.top .links{display:none}
+    .honest-grid,.what-head,.deal-grid,.faq-grid,.foot-grid{grid-template-columns:1fr;gap:48px}
+    .perks-grid{grid-template-columns:1fr}
+    .pstep{grid-template-columns:auto 1fr;gap:18px}
+    .pstep p,.pstep .when{grid-column:1/-1;margin-left:80px}
+    .demo-stage{height:440px}
+    .scene h3{font-size:60px}
+    .form-card .row{grid-template-columns:1fr}
+    .coord{display:none}
+    .honest-tag{writing-mode:horizontal-tb;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="prelaunch">— Pre-launch · Looking for our first design partners <span>· No charge · No commitment</span></div>
+
+<nav class="top">
+  <div class="wm">VacayStack<span class="dot">.</span></div>
+  <div class="links">
+    <a href="#what">What you get</a>
+    <a href="#deal">The deal</a>
+    <a href="#process">Process</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <button class="cta" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply</button>
+</nav>
+
+<!-- ═════════ HERO ═════════ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-eye reveal in"><span class="dot-live"></span>Looking for our first three property owners</div>
+    <h1 class="head reveal in d1">A scroll-telling<br>website for<br>your <em>rental.</em><br>On us.</h1>
+    <p class="hero-sub reveal in d2">We're building VacayStack in two phases. <strong>Phase 1 — shipping now:</strong> a beautiful, cinematic, scroll-telling website for your rental, plus a dedicated CRM to manage it. <strong>Phase 2 — comming soon:</strong> a full PMS for owners running multiple properties. Design partners get Phase 1 on us, and walk into Phase 2 first.</p>
+    <div class="hero-cta reveal in d3">
+      <button class="btn-gold" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply to be a design partner
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+      </button>
+      <button class="btn-ghost" onclick="document.getElementById('what').scrollIntoView({behavior:'smooth'})">See an example →</button>
+    </div>
+    <div class="terms reveal in d4">
+      <span>$0 to participate</span>
+      <span>No exclusivity</span>
+      <span>You own the site</span>
+      <span>2-week build</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ HONEST blurb ═════════ -->
+<section class="honest">
+  <div class="wrap-narrow honest-grid">
+    <div class="honest-tag">— A note from us</div>
+    <div>
+      <p class="reveal">
+        We're <em>two engineers</em> who think the best vacation rentals deserve <em>a real website</em>, not just a listing.<br><br>
+        <span class="dim">We've built the design. We need real properties to build it for. If you have a rental and want one, we'd like to make yours next — for free, while we figure the rest out.</span>
+      </p>
+      <div class="signed reveal d1">— <strong>Pulkit &amp; Mayank</strong> · Putri Labs</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ WHAT YOU GET ═════════ -->
+<section class="what" id="what">
+  <div class="wrap">
+    <div class="what-head">
+      <div>
+        <div class="section-eye reveal"><span class="num-pre">01</span>What we'll build for you</div>
+        <h2 class="section reveal d1">A site that<br>treats your rental<br>like a <em>place</em>,<br>not a listing.</h2>
+      </div>
+      <p class="reveal d2"><strong>Scroll-telling</strong> means the page unfolds like a short film — the hero, the gallery, the story of the property, the reservation form — all sequenced so a guest who scrolls reaches the booking moment already half in love. Below is a static preview of what your property's site could feel like.</p>
+    </div>
+
+    <div class="demo-frame reveal d2">
+      <div class="demo-bar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="url">cedarridge.com / <em>powered by vacaystack</em></div>
+        <div class="lock">SECURE</div>
+      </div>
+      <div class="demo-stage" id="stage">
+        <div class="scene scene-1 active" data-i="0">
+          <div class="eye">— Cedar Ridge · Tahoe</div>
+          <h3>Celestial<br><span style="color:var(--vs-gold)">clarity.</span></h3>
+          <div class="sub">a private observatory</div>
+          <div class="poet">When the sun dips below the horizon, the real performance begins. A private retreat where time dissolves into the quiet dark.</div>
+        </div>
+        <div class="scene scene-2" data-i="1">
+          <div class="gal">
+            <div class="tile t1"><div class="cap">Living · North Wing</div></div>
+            <div class="tile t2"><div class="cap">Observatory Deck</div></div>
+            <div class="tile t3"><div class="cap">Primary Bedroom</div></div>
+            <div class="tile t4"><div class="cap">Hearth &amp; Kitchen</div></div>
+          </div>
+        </div>
+        <div class="scene scene-3" data-i="2">
+          <div class="eye">— Reservation</div>
+          <h3 style="font-size:48px;margin-bottom:24px">Your stay,<br><span style="color:var(--vs-gold)">arranged.</span></h3>
+          <div class="form">
+            <div class="field"><span class="k">Arrival</span><span class="v">Fri · Mar 14</span></div>
+            <div class="field"><span class="k">Departure</span><span class="v">Thu · Mar 20</span></div>
+            <div class="field"><span class="k">Guests</span><span class="v">2 adults</span></div>
+            <div class="field"><span class="k">Total · 6 nights</span><span class="v"><em>$2,040</em></span></div>
+            <button class="reserve">Reserve · pay later</button>
+          </div>
+        </div>
+      </div>
+      <div class="demo-nav">
+        <div class="demo-dots">
+          <button class="active" data-go="0">01 · Hero</button>
+          <button data-go="1">02 · Gallery</button>
+          <button data-go="2">03 · Reserve</button>
+        </div>
+        <div class="demo-hint">Click to preview each scene →</div>
+      </div>
+    </div>
+    <div class="demo-caption reveal">— Sample site for a fictional Tahoe cabin · <em>yours will be made for your property</em></div>
+  </div>
+</section>
+
+<!-- ═════════ THREE BENEFITS ═════════ -->
+<section class="perks">
+  <div class="wrap">
+    <div class="section-eye reveal"><span class="num-pre">02</span>Three things you walk away with</div>
+    <h2 class="section reveal d1">A site you'd be<br><em>proud</em> to send.</h2>
+    <div class="perks-grid">
+      <div class="perk reveal">
+        <div class="pn">— I · The site itself</div>
+        <h4>A live, scroll-telling property page on <em>your own domain.</em></h4>
+        <p>Hosted, fast, mobile-perfect. Bring your own domain or use a free subdomain. We hand it over — code, content, login. It's yours.</p>
+      </div>
+      <div class="perk reveal d1">
+        <div class="pn">— II · The CRM</div>
+        <h4>A dedicated CRM to <em>manage your site.</em></h4>
+        <p>Edit copy, swap photos, update rates, and read every guest inquiry from one calm dashboard. Built for owners, not agencies — your site, in one place.</p>
+      </div>
+      <div class="perk reveal d2">
+        <div class="pn">— III · The story</div>
+        <h4>Photography direction &amp; <em>copy that sounds like you.</em></h4>
+        <p>We'll interview you for an hour, look at your photos, and write a hero, a gallery captioning, and a property story you actually want guests to read.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ PHASE 2 ROADMAP ═════════ -->
+<section class="perks" style="background:radial-gradient(ellipse 70% 60% at 50% 50%, rgba(193,155,118,.05), transparent 70%)">
+  <div class="wrap">
+    <div class="section-eye reveal"><span class="num-pre">03</span>The roadmap, on the record</div>
+    <h2 class="section reveal d1">Two phases.<br>One <em>operating system</em><br>for your rental business.</h2>
+
+    <div class="perks-grid" style="margin-top:64px;grid-template-columns:1fr 1fr">
+      <div class="perk reveal" style="padding:56px 44px;background:rgba(193,155,118,.04);border:.5px solid rgba(193,155,118,.2)">
+        <div class="pn" style="color:var(--vs-gold);opacity:1;display:flex;justify-content:space-between;align-items:center">
+          <span>— Phase 1 · Shipping now</span>
+          <span style="background:var(--vs-gold);color:#0B0907;padding:4px 10px;border-radius:9999px;font-weight:700;letter-spacing:.15em">LIVE</span>
+        </div>
+        <h4 style="font-size:36px;margin-top:14px">Website &amp; <em>CRM.</em></h4>
+        <p style="font-size:15px;margin-top:18px">A scroll-telling property website plus a dedicated CRM to manage it. Edit content, route guest inquiries, watch what your site does, all from one place. <strong style="color:#FAF7F2;font-weight:500">Free for our first three design partners.</strong></p>
+        <ul style="list-style:none;padding:0;margin:24px 0 0;display:flex;flex-direction:column;gap:10px">
+          <li style="font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,247,242,.7);display:flex;align-items:center;gap:12px"><span style="width:14px;height:1px;background:var(--vs-gold)"></span>Scroll-telling property site</li>
+          <li style="font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,247,242,.7);display:flex;align-items:center;gap:12px"><span style="width:14px;height:1px;background:var(--vs-gold)"></span>Dedicated CRM for content &amp; inquiries</li>
+          <li style="font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,247,242,.7);display:flex;align-items:center;gap:12px"><span style="width:14px;height:1px;background:var(--vs-gold)"></span>Custom domain &amp; first-year hosting</li>
+        </ul>
+      </div>
+
+      <div class="perk reveal d1" style="padding:56px 44px;border:.5px dashed rgba(250,247,242,.18)">
+        <div class="pn" style="display:flex;justify-content:space-between;align-items:center">
+          <span>— Phase 2 · Cooming soon</span>
+          <span style="border:.5px solid rgba(250,247,242,.3);color:rgba(250,247,242,.7);padding:4px 10px;border-radius:9999px;font-weight:600;letter-spacing:.15em">COOMING SOON</span>
+        </div>
+        <h4 style="font-size:36px;margin-top:14px">The full <em>PMS.</em></h4>
+        <p style="font-size:15px;margin-top:18px">One tool to manage every property and every site you own. Channel sync to Airbnb &amp; VRBO, direct payments via Stripe, multi-property dashboards, and a calendar that doesn't double-book. <strong style="color:#FAF7F2;font-weight:500">Design partners walk in first, at the founder rate.</strong></p>
+        <ul style="list-style:none;padding:0;margin:24px 0 0;display:flex;flex-direction:column;gap:10px">
+          <li style="font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,247,242,.55);display:flex;align-items:center;gap:12px"><span style="width:14px;height:1px;background:rgba(250,247,242,.3)"></span>Multi-property &amp; multi-site management</li>
+          <li style="font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,247,242,.55);display:flex;align-items:center;gap:12px"><span style="width:14px;height:1px;background:rgba(250,247,242,.3)"></span>Channel sync · Airbnb · VRBO · Booking.com</li>
+          <li style="font-family:var(--font-mono-pl);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(250,247,242,.55);display:flex;align-items:center;gap:12px"><span style="width:14px;height:1px;background:rgba(250,247,242,.3)"></span>Direct payments &amp; guest tools</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ DEAL ═════════ -->
+<section class="deal" id="deal">
+  <div class="wrap">
+    <div class="deal-head">
+      <div class="section-eye reveal"><span class="num-pre">04</span>The deal, in plain English</div>
+      <h2 class="section reveal d1">No charge.<br>No commitment.<br><em>One ask.</em></h2>
+    </div>
+
+    <div class="deal-grid">
+      <div class="deal-col you">
+        <h5>— What you give</h5>
+        <ul>
+          <li class="reveal"><span class="mk">A</span>30 minutes on a Zoom to walk us through the property and tell its story.</li>
+          <li class="reveal d1"><span class="mk">B</span>Your existing photos, even if they're phone shots. We'll work with them.</li>
+          <li class="reveal d1"><span class="mk">C</span>Honest feedback on early drafts — what feels right, what doesn't.</li>
+          <li class="reveal d2"><span class="mk">D</span>Permission to use anonymized screenshots in our portfolio &amp; pitch.</li>
+        </ul>
+        <div class="foot-line">— Total time on your end · <em>~2 hours over two weeks</em></div>
+      </div>
+      <div class="deal-col us">
+        <h5>— What we give</h5>
+        <ul>
+          <li class="reveal"><span class="mk">A</span>A complete scroll-telling website, designed &amp; built specifically for your property.</li>
+          <li class="reveal d1"><span class="mk">B</span>A dedicated CRM to manage the site, edit content, and route guest inquiries.</li>
+          <li class="reveal d1"><span class="mk">C</span>Custom domain setup &amp; hosting for the first year — your code, your copy, yours to keep.</li>
+          <li class="reveal d2"><span class="mk">D</span>First seat at the table when the Phase 2 PMS ships — at the founder rate, locked.</li>
+        </ul>
+        <div class="foot-line">— Total cost to you · <em>$0</em> · No contract · No exclusivity</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ PROCESS ═════════ -->
+<section class="process" id="process">
+  <div class="wrap">
+    <div class="section-eye reveal"><span class="num-pre">05</span>How the two weeks go</div>
+    <h2 class="section reveal d1">Short, calm,<br><em>uncomplicated.</em></h2>
+
+    <div class="process-list">
+      <div class="pstep reveal">
+        <div class="pn2">— Day 1</div>
+        <h4>The <em>kickoff</em> call.</h4>
+        <p>Thirty minutes. You walk us through the property, the kind of guest you want, and a few sites you secretly admire.</p>
+        <div class="when">~30 min</div>
+      </div>
+      <div class="pstep reveal">
+        <div class="pn2">— Day 4</div>
+        <h4>First draft, <em>shared.</em></h4>
+        <p>We send a link to a working site with your photos, copy, and theme. You scroll through it on your phone, in your kitchen.</p>
+        <div class="when">~20 min review</div>
+      </div>
+      <div class="pstep reveal">
+        <div class="pn2">— Day 8</div>
+        <h4>One round of <em>revisions.</em></h4>
+        <p>You tell us what's off. We fix it. Copy tweaks, photo swaps, color adjustments — within reason, all of it.</p>
+        <div class="when">~30 min review</div>
+      </div>
+      <div class="pstep reveal">
+        <div class="pn2">— Day 14</div>
+        <h4>Live on your <em>domain.</em></h4>
+        <p>We point your domain, hand over the login, and stay on call for a week to fix anything that breaks. Done.</p>
+        <div class="when">Hands-off</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ FAQ ═════════ -->
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="faq-grid">
+      <div>
+        <div class="section-eye reveal"><span class="num-pre">06</span>Honest answers</div>
+        <h2 class="section reveal d1">Questions<br>you should <em>ask.</em></h2>
+      </div>
+      <div class="faq-list">
+        <div class="qa reveal">
+          <h5>Why <em>free?</em> What's the actual catch?</h5>
+          <p>The site needs real properties to be real. A portfolio of three handmade owner sites is worth more to us than any monthly fee right now — it's how we'll convince our next thirty customers we know what we're doing.</p>
+        </div>
+        <div class="qa reveal">
+          <h5>What if I love it but don't want to use VacayStack later?</h5>
+          <p>You keep the site. The code is yours, the copy is yours, the domain is yours. We'd love to keep working with you — but there's no contractual hold. Walking away costs you nothing.</p>
+        </div>
+        <div class="qa reveal">
+          <h5>Will it sync with Airbnb / VRBO / Booking?</h5>
+          <p>Not yet. <em>Phase 1</em> is the scroll-telling website plus a dedicated CRM to manage it. <em>Phase 2</em> — Comming soon, shipping later this year — is the full PMS: channel sync, multi-property management, and direct payments, all from the same tool. Design partners go first.</p>
+        </div>
+        <div class="qa reveal">
+          <h5>What kind of properties are you looking for?</h5>
+          <p>Owner-operated short-term rentals in the US — cabins, beach houses, design-forward homes, single boutique units. The aesthetic of the site rewards a property with a strong sense of place. One to ten properties is the sweet spot.</p>
+        </div>
+        <div class="qa reveal">
+          <h5>What if my photos aren't great?</h5>
+          <p>Honest answer — they don't need to be magazine-grade, but the better they are, the better the site looks. We'll guide you on a one-hour reshoot with your phone if needed. We've seen iPhone 14 photos make a beautiful site.</p>
+        </div>
+        <div class="qa reveal">
+          <h5>How many design partners are you taking?</h5>
+          <p>Three. We picked the number small on purpose — small enough that we can spend real time on each one, large enough that we learn what generalizes. After three, we'll have a paid offering.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ APPLY ═════════ -->
+<section class="cta" id="apply">
+  <div class="cta-inner">
+    <div class="section-eye reveal" style="justify-content:center;display:inline-flex"><span class="num-pre">07</span>Apply to be a design partner</div>
+    <h2 class="reveal d1">Tell us about<br>your <em>place.</em></h2>
+    <p class="cta-sub reveal d2">We're picking three properties. We'll read every application personally and reply within <em>48 hours</em>, even if the answer's no.</p>
+
+    <form class="form-card reveal d2" onsubmit="event.preventDefault();this.querySelector('button').textContent='Sent · We\'ll be in touch ↗';this.querySelector('button').style.background='rgba(193,155,118,.3)'">
+      <div class="row">
+        <div class="field">
+          <label>Your name</label>
+          <input type="text" placeholder="Jane Halverson" required>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" placeholder="jane@yourcabin.com" required>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Property name</label>
+          <input type="text" placeholder="Cedar Ridge Cabin" required>
+        </div>
+        <div class="field">
+          <label>Where is it?</label>
+          <input type="text" placeholder="South Lake Tahoe, CA" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>How many short-term rentals do you operate?</label>
+        <select>
+          <option>Just this one</option>
+          <option>2 or 3</option>
+          <option>4 to 10</option>
+          <option>More than 10</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>In one sentence — what makes it special?</label>
+        <textarea placeholder="A 1974 cabin on five private acres at the edge of Tahoe, with a deck built for the Milky Way."></textarea>
+      </div>
+      <button type="submit">Send my application
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
+      </button>
+      <div class="micro"><em>Reply within 48 hours.</em></div>
+    </form>
+  </div>
+</section>
+
+<!-- ═════════ FOOTER ═════════ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-wm">VacayStack<span class="dot">.</span></div>
+        <p class="foot-tag">A property management system for owners who'd rather host the guest than the platform. Pre-launch. Made by hand, in public.</p>
+      </div>
+      <div class="fcol">
+        <h6>— Studio</h6>
+        <ul>
+          <li><a href="#">About Putri Labs</a></li>
+          <li><a href="#">Pulkit · founder</a></li>
+          <li><a href="#">Mayank · founder</a></li>
+          <li><a href="#process">Roadmap</a></li>
+        </ul>
+      </div>
+      <div class="fcol">
+        <h6>— Get in touch</h6>
+        <ul>
+          <li><a href="#apply">Apply as a design partner</a></li>
+          <li><a href="#">labsputri@gmail.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Putri Labs · Pre-launch · Made by hand</span>
+      <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal-on-scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Demo scene switcher
+  const stage = document.getElementById('stage');
+  const scenes = stage.querySelectorAll('.scene');
+  const dots = document.querySelectorAll('.demo-dots button');
+  let active = 0;
+  function setScene(i){
+    scenes.forEach(s => s.classList.toggle('active', +s.dataset.i === i));
+    dots.forEach(d => d.classList.toggle('active', +d.dataset.go === i));
+    active = i;
+  }
+  dots.forEach(d => d.addEventListener('click', () => setScene(+d.dataset.go)));
+  // Auto-cycle
+  let auto = setInterval(() => setScene((active+1) % scenes.length), 4200);
+  stage.addEventListener('mouseenter', () => clearInterval(auto));
+  dots.forEach(d => d.addEventListener('click', () => clearInterval(auto)));
+</script>
+</body>
+</html>
