@@ -32,6 +32,19 @@
   nav.top .links a:hover{color:#FAF7F2}
   nav.top .cta{background:var(--vs-gold);color:#0B0907;padding:9px 18px;border-radius:9999px;font-size:13px;font-weight:600;border:0;cursor:pointer;transition:transform .3s var(--ease-expo),box-shadow .3s}
   nav.top .cta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(193,155,118,.4)}
+  
+  .menu-toggle{display:none;background:transparent;border:0;padding:4px;cursor:pointer;flex-direction:column;gap:6px;width:28px;margin-right:8px}
+  .menu-toggle span{display:block;width:100%;height:1.5px;background:#FAF7F2;transition:all .3s var(--ease-expo)}
+
+  .mobile-menu{position:fixed;inset:0;background:rgba(11,9,7,.98);z-index:1000;padding:40px 32px;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .4s var(--ease-expo);backdrop-filter:blur(32px)}
+  .mobile-menu.active{opacity:1;pointer-events:auto}
+  .mm-inner{max-width:480px;margin:0 auto;width:100%}
+  .mm-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:64px}
+  .mm-head .wm{font-family:var(--font-display-vs);font-size:24px;font-weight:500}
+  .menu-close{background:transparent;border:0;color:#FAF7F2;font-size:40px;cursor:pointer;line-height:1;font-weight:200}
+  .mm-links{display:flex;flex-direction:column;gap:36px}
+  .mm-links a{font-family:var(--font-display-vs);font-size:36px;color:#FAF7F2;text-decoration:none;font-weight:300;letter-spacing:-.02em}
+
 
   /* PRE-LAUNCH BAR */
   .prelaunch{position:fixed;top:0;left:0;right:0;z-index:99;background:rgba(193,155,118,.08);border-bottom:.5px solid rgba(193,155,118,.25);text-align:center;padding:9px 16px;font-family:var(--font-mono-pl);font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--vs-gold);backdrop-filter:blur(14px)}
@@ -228,17 +241,61 @@
   .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
 
   @media (max-width:960px){
+    nav.top{top:44px;width:calc(100% - 40px);padding:8px 8px 8px 20px;gap:0;justify-content:space-between}
     nav.top .links{display:none}
+    nav.top .cta{display:none}
+    .menu-toggle{display:flex}
+    .prelaunch{font-size:9px;letter-spacing:.2em;padding:9px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .prelaunch span{display:none}
+
+    .hero{padding:140px 0 60px}
+    h1.head{font-size:clamp(44px,12vw,80px);max-width:10ch}
+    .hero-sub{font-size:17px;margin-top:32px;line-height:1.5}
+
+
     .honest-grid,.what-head,.deal-grid,.faq-grid,.foot-grid{grid-template-columns:1fr;gap:48px}
     .perks-grid{grid-template-columns:1fr}
     .pstep{grid-template-columns:auto 1fr;gap:18px}
     .pstep p,.pstep .when{grid-column:1/-1;margin-left:80px}
     .demo-stage{height:440px}
     .scene h3{font-size:60px}
+    .demo-nav{flex-direction:column;gap:16px;align-items:center;padding:24px 20px}
+    .demo-dots{flex-wrap:wrap;justify-content:center}
     .form-card .row{grid-template-columns:1fr}
     .coord{display:none}
     .honest-tag{writing-mode:horizontal-tb;transform:none}
   }
+
+
+  @media (max-width:480px){
+    .wrap,.wrap-narrow{padding:0 24px}
+    .hero{padding:100px 0 40px}
+    .btn-gold,.btn-ghost{width:100%;justify-content:center}
+    .hero-cta{gap:12px}
+    .perk{padding:32px 24px}
+    .deal-col{padding:32px 24px}
+    .pstep{gap:12px}
+    .pstep p,.pstep .when{margin-left:60px}
+    .pstep .pn2{width:60px}
+    .demo-stage{height:380px}
+    .scene h3{font-size:48px}
+    .scene .sub{font-size:13px;letter-spacing:.2em}
+    .scene .poet{font-size:13px;margin-top:24px}
+    .scene-2 .gal{grid-template-columns:1fr}
+    .demo-dots button{padding:6px 10px;font-size:9px}
+    .demo-bar .lock{display:none}
+    .demo-bar .url{font-size:8px;letter-spacing:.1em}
+    .demo-nav{padding:20px 16px;gap:12px}
+    .demo-hint{font-size:9px;opacity:.6}
+
+    .form-card{padding:24px}
+
+    .foot-wm{font-size:44px}
+    .foot-tag{font-size:15px}
+  }
+
+
+
 </style>
 </head>
 <body>
@@ -254,14 +311,34 @@
     <a href="#faq">FAQ</a>
   </div>
   <button class="cta" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply</button>
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+  </button>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mm-inner">
+    <div class="mm-head">
+      <div class="wm">VacayStack<span class="dot">.</span></div>
+      <button class="menu-close" id="menuClose">&times;</button>
+    </div>
+    <div class="mm-links">
+      <a href="#what">What you get</a>
+      <a href="#deal">The deal</a>
+      <a href="#process">Process</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <button class="btn-gold" style="width:100%;margin-top:40px" onclick="toggleMenu();document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply now</button>
+  </div>
+</div>
 
 <!-- ═════════ HERO ═════════ -->
 <section class="hero">
   <div class="wrap">
     <div class="hero-eye reveal in"><span class="dot-live"></span>Looking for our first three property owners</div>
     <h1 class="head reveal in d1">A scroll-telling<br>website for<br>your <em>rental.</em><br>On us.</h1>
-    <p class="hero-sub reveal in d2">We're building VacayStack in two phases. <strong>Phase 1 — shipping now:</strong> a beautiful, cinematic, scroll-telling website for your rental, plus a dedicated CRM to manage it. <strong>Phase 2 — comming soon:</strong> a full PMS for owners running multiple properties. Design partners get Phase 1 on us, and walk into Phase 2 first.</p>
+    <p class="hero-sub reveal in d2">We're building VacayStack in two phases. <strong>Phase 1 — shipping now:</strong> a beautiful, cinematic, scroll-telling website for your rental, plus a dedicated CRM to manage it. <strong>Phase 2 — coming soon:</strong> a full PMS for owners running multiple properties. Design partners get Phase 1 on us, and walk into Phase 2 first.</p>
     <div class="hero-cta reveal in d3">
       <button class="btn-gold" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Apply to be a design partner
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7h10M7 2l5 5-5 5"/></svg>
@@ -367,7 +444,7 @@
       <div class="perk reveal d2">
         <div class="pn">— III · The story</div>
         <h4>Photography direction &amp; <em>copy that sounds like you.</em></h4>
-        <p>We'll interview you for an hour, look at your photos, and write a hero, a gallery captioning, and a property story you actually want guests to read.</p>
+        <p>We'll interview you for an hour, look at your photos, and write a hero, gallery copy, and a property story you actually want guests to read.</p>
       </div>
     </div>
   </div>
@@ -396,8 +473,8 @@
 
       <div class="perk reveal d1" style="padding:56px 44px;border:.5px dashed rgba(250,247,242,.18)">
         <div class="pn" style="display:flex;justify-content:space-between;align-items:center">
-          <span>— Phase 2 · Cooming soon</span>
-          <span style="border:.5px solid rgba(250,247,242,.3);color:rgba(250,247,242,.7);padding:4px 10px;border-radius:9999px;font-weight:600;letter-spacing:.15em">COOMING SOON</span>
+          <span>— Phase 2 · Coming soon</span>
+          <span style="border:.5px solid rgba(250,247,242,.3);color:rgba(250,247,242,.7);padding:4px 10px;border-radius:9999px;font-weight:600;letter-spacing:.15em">COMING SOON</span>
         </div>
         <h4 style="font-size:36px;margin-top:14px">The full <em>PMS.</em></h4>
         <p style="font-size:15px;margin-top:18px">One tool to manage every property and every site you own. Channel sync to Airbnb &amp; VRBO, direct payments via Stripe, multi-property dashboards, and a calendar that doesn't double-book. <strong style="color:#FAF7F2;font-weight:500">Design partners walk in first, at the founder rate.</strong></p>
@@ -498,7 +575,7 @@
         </div>
         <div class="qa reveal">
           <h5>Will it sync with Airbnb / VRBO / Booking?</h5>
-          <p>Not yet. <em>Phase 1</em> is the scroll-telling website plus a dedicated CRM to manage it. <em>Phase 2</em> — Comming soon, shipping later this year — is the full PMS: channel sync, multi-property management, and direct payments, all from the same tool. Design partners go first.</p>
+          <p>Not yet. <em>Phase 1</em> is the scroll-telling website plus a dedicated CRM to manage it. <em>Phase 2</em> — Coming later this year — is the full PMS: channel sync, multi-property management, and direct payments, all from the same tool. Design partners go first.</p>
         </div>
         <div class="qa reveal">
           <h5>What kind of properties are you looking for?</h5>
@@ -599,6 +676,21 @@
 </footer>
 
 <script>
+  // Mobile Menu Logic
+  const menuToggle = document.getElementById('menuToggle');
+  const menuClose = document.getElementById('menuClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const mmLinks = mobileMenu.querySelectorAll('a');
+
+  function toggleMenu() {
+    mobileMenu.classList.toggle('active');
+    document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+  }
+
+  menuToggle.addEventListener('click', toggleMenu);
+  menuClose.addEventListener('click', toggleMenu);
+  mmLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
   // Reveal-on-scroll
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
