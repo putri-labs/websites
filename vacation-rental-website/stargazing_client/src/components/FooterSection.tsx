@@ -4,11 +4,17 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useScrollTellingHooks } from "./scrollytelling/hooks-helper";
 import { Globe, Send, MessageCircle, Mail, ArrowUpRight } from "lucide-react";
+import type { PublicSocialContent, PublicContactContent } from "@/lib/types";
 
 interface FooterSectionProps {
   start?: number;
   end?: number;
   className?: string;
+  brandName?: string;
+  copyrightText?: string;
+  tagline?: string | null;
+  socialLinks?: PublicSocialContent | null;
+  contactInfo?: PublicContactContent | null;
 }
 
 const FOOTER_LINKS = [
@@ -45,6 +51,11 @@ export default function FooterSection({
   start = 0.82,
   end = 1,
   className,
+  brandName = "Stargazing",
+  copyrightText = "© 2026 Stargazing Retreats. All rights reserved.",
+  tagline,
+  socialLinks,
+  contactInfo,
 }: FooterSectionProps) {
   const { active, progress } = useScrollTellingHooks(start, end);
 
@@ -68,15 +79,18 @@ export default function FooterSection({
     },
   };
 
-  const wordmarkVariants = {
-    hidden: { opacity: 0, scale: 1.1, filter: "blur(10px)" },
-    visible: {
-      opacity: 0.05,
-      scale: 1,
-      filter: "blur(0px)",
-      transition: { duration: 1.5, ease: "easeOut" },
+  // Build social icon entries from CRM data, falling back to placeholder hrefs.
+  const socialEntries = [
+    { icon: Globe, href: socialLinks?.socialFacebook || "#" },
+    { icon: Send, href: socialLinks?.socialInstagram || "#" },
+    { icon: MessageCircle, href: socialLinks?.socialTwitter || "#" },
+    {
+      icon: Mail,
+      href: contactInfo?.contactEmail
+        ? `mailto:${contactInfo.contactEmail}`
+        : "#",
     },
-  };
+  ];
 
   return (
     <div
@@ -130,7 +144,8 @@ export default function FooterSection({
               The Sentinel
             </h3>
             <p className="text-white/60 text-sm font-serif italic max-w-[200px]">
-              Receive our journal on celestial events and exclusive retreats.
+              {tagline ||
+                "Receive our journal on celestial events and exclusive retreats."}
             </p>
             <div className="relative flex items-center group">
               <input
@@ -152,42 +167,26 @@ export default function FooterSection({
             className="flex flex-col space-y-4 mb-8 md:mb-0"
           >
             <h1 className="text-3xl font-serif text-white tracking-widest uppercase">
-              Stargazing
+              {brandName}
             </h1>
             <p className="text-white/40 text-xs tracking-widest uppercase">
-              © 2026 Stargazing Retrearts. All rights reserved.
+              {copyrightText}
             </p>
           </motion.div>
 
           <div className="flex items-center space-x-8">
-            <motion.a
-              variants={itemVariants}
-              href="#"
-              className="text-white/60 hover:text-[#ffd95f] transition-all duration-300 hover:scale-110"
-            >
-              <Globe className="w-6 h-6" />
-            </motion.a>
-            <motion.a
-              variants={itemVariants}
-              href="#"
-              className="text-white/60 hover:text-[#ffd95f] transition-all duration-300 hover:scale-110"
-            >
-              <Send className="w-6 h-6" />
-            </motion.a>
-            <motion.a
-              variants={itemVariants}
-              href="#"
-              className="text-white/60 hover:text-[#ffd95f] transition-all duration-300 hover:scale-110"
-            >
-              <MessageCircle className="w-6 h-6" />
-            </motion.a>
-            <motion.a
-              variants={itemVariants}
-              href="#"
-              className="text-white/60 hover:text-[#ffd95f] transition-all duration-300 hover:scale-110"
-            >
-              <Mail className="w-6 h-6" />
-            </motion.a>
+            {socialEntries.map((entry, idx) => (
+              <motion.a
+                key={idx}
+                variants={itemVariants}
+                href={entry.href}
+                target={entry.href !== "#" ? "_blank" : undefined}
+                rel={entry.href !== "#" ? "noopener noreferrer" : undefined}
+                className="text-white/60 hover:text-[#ffd95f] transition-all duration-300 hover:scale-110"
+              >
+                <entry.icon className="w-6 h-6" />
+              </motion.a>
+            ))}
           </div>
         </div>
       </motion.div>

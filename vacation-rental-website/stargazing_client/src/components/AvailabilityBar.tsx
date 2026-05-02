@@ -3,8 +3,14 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export default function AvailabilityBar() {
-  const container = {
+interface AvailabilityBarProps {
+  ctaText?: string;
+}
+
+export default function AvailabilityBar({
+  ctaText = "Check Availability",
+}: AvailabilityBarProps) {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -77,7 +83,7 @@ export default function AvailabilityBar() {
             className="flex items-center justify-center p-6 bg-accent text-background hover:bg-white transition-all duration-500 overflow-hidden relative group/btn"
           >
             <span className="relative z-10 text-[10px] font-mono uppercase tracking-[0.4em] font-bold">
-              Check Availability
+              {ctaText}
             </span>
             <div className="absolute inset-0 bg-white translate-y-full group-hover/btn:translate-y-0 transition-transform duration-500" />
           </motion.button>

@@ -6,7 +6,19 @@ import { cn } from "@/lib/utils";
 import AvailabilityBar from "./AvailabilityBar";
 import { useRef } from "react";
 
-export default function Hero() {
+interface HeroProps {
+  headline?: string;
+  subheadline?: string;
+  description?: string;
+  ctaText?: string;
+}
+
+export default function Hero({
+  headline = "Celestial",
+  subheadline = "Clarity",
+  description = "When the sun dips below the horizon, the real performance begins. A private observatory for the soul, perched where time dissolves into the void.",
+  ctaText = "Check Availability",
+}: HeroProps) {
   const { active } = useScrollTellingHooks(0, 0.1);
   const containerRef = useRef(null);
   
@@ -59,7 +71,7 @@ export default function Hero() {
       >
         <div className="flex flex-col items-start md:items-center">
           <div className="relative mb-4 md:mb-0">
-            {/* The "Celestial" - Serif Primary */}
+            {/* Primary Headline — Serif */}
             <motion.h1
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -70,10 +82,10 @@ export default function Hero() {
               }}
               className="font-serif text-[15vw] md:text-[12vw] text-accent leading-[0.8] tracking-tighter drop-shadow-[0_15px_40px_rgba(0,0,0,0.9)]"
             >
-              Celestial
+              {headline}
             </motion.h1>
 
-            {/* The "Clarity" - Offset Sans-Serif Secondary */}
+            {/* Secondary Headline — Offset Sans-Serif */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -85,7 +97,7 @@ export default function Hero() {
               className="md:absolute md:top-1/2 md:right-[-5vw] md:-translate-y-1/2"
             >
               <span className="font-sans text-[8vw] md:text-[6vw] text-grey-900 font-extralight tracking-[0.4em] uppercase opacity-80 mix-blend-screen drop-shadow-2xl">
-                Clarity
+                {subheadline}
               </span>
             </motion.div>
           </div>
@@ -99,14 +111,12 @@ export default function Hero() {
               className="max-w-md text-center"
             >
               <p className="font-sans text-white text-sm md:text-lg leading-relaxed tracking-wider drop-shadow-xl text-scrim">
-                When the sun dips below the horizon, the real performance
-                begins. A private observatory for the soul, perched where time
-                dissolves into the void.
+                {description}
               </p>
             </motion.div>
           </div>
 
-          <AvailabilityBar />
+          <AvailabilityBar ctaText={ctaText} />
         </div>
       </motion.div>
 
