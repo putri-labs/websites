@@ -42,7 +42,7 @@ function transformKeys(obj: unknown): unknown {
       Object.entries(obj as Record<string, unknown>).map(([key, value]) => [
         snakeToCamel(key),
         transformKeys(value),
-      ])
+      ]),
     );
   }
   return obj;
@@ -58,20 +58,19 @@ function transformKeys(obj: unknown): unknown {
 export async function getWebsiteContent(): Promise<PublicWebsiteContent | null> {
   if (!CLIENT_ID) {
     console.warn(
-      "[api] VACAYSTACK_CLIENT_ID is not set. Using default content."
+      "[api] VACAYSTACK_CLIENT_ID is not set. Using default content.",
     );
     return null;
   }
 
   try {
-    const res = await fetch(
-      `${API_URL}/public/content/${CLIENT_ID}`,
-      { next: { revalidate: REVALIDATE_SECONDS } }
-    );
+    const res = await fetch(`${API_URL}/public/content/${CLIENT_ID}`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
 
     if (!res.ok) {
       console.error(
-        `[api] Failed to fetch website content: ${res.status} ${res.statusText}`
+        `[api] Failed to fetch website content: ${res.status} ${res.statusText}`,
       );
       return null;
     }
@@ -92,20 +91,19 @@ export async function getWebsiteContent(): Promise<PublicWebsiteContent | null> 
 export async function getListings(): Promise<PublicListing[]> {
   if (!CLIENT_ID) {
     console.warn(
-      "[api] VACAYSTACK_CLIENT_ID is not set. Returning empty listings."
+      "[api] VACAYSTACK_CLIENT_ID is not set. Returning empty listings.",
     );
     return [];
   }
 
   try {
-    const res = await fetch(
-      `${API_URL}/public/listings/${CLIENT_ID}`,
-      { next: { revalidate: REVALIDATE_SECONDS } }
-    );
+    const res = await fetch(`${API_URL}/public/listings/${CLIENT_ID}`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
 
     if (!res.ok) {
       console.error(
-        `[api] Failed to fetch listings: ${res.status} ${res.statusText}`
+        `[api] Failed to fetch listings: ${res.status} ${res.statusText}`,
       );
       return [];
     }
